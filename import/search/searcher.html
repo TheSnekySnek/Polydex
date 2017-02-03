@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mose</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/magic-check.css">
+    <!--<link rel="stylesheet" href="css/bulma.css">-->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="js/jquery.js" charset="utf-8"></script>
+    <script src="js/search.js" charset="utf-8"></script>
+    <script>if (window.module) module = window.module;</script>
+  </head>
+  <body>
+    <div class="container" style="max-width: 774px;">
+      <div class="topbar" style="-webkit-app-region: drag">
+        <p></p>
+        <i id="closeBtn" class="fa fa-window-close" aria-hidden="true" style="-webkit-app-region: no-drag"></i>
+      </div>
+      <div class="barIcon">
+        <span class="icon is-medium">
+          <i id="settingsBtn" class="fa fa-cogs fa-2x" aria-hidden="true"></i>
+        </span>
+      </div>
+      <div class="search">
+        <input type="text" name="searcher" id="searcher" value="" autofocus placeholder="Looking for something ?">
+      </div>
+      <div class="results" style="display:none; overflow-y: scroll; background-color: white; max-height: 400px;">
+
+      </div>
+      <div class="settings" style="display:none">
+        <div class="set-categories">
+            <div id="generalBtn" class="cat-active">General</div>
+            <div id="sourcesBtn">Sources</div>
+        </div>
+        <div class="cat-general">
+          <div class="forminput">
+            <input class="magic-checkbox" type="checkbox" name="layout" id="1" value="option">
+            <label for="1"></label>
+            <p>Search while typing</p>
+
+          </div>
+
+
+        </div>
+        <div class="cat-sources">
+
+        </div>
+        <button id="settingsDoneBtn" type="button" name="button">Done</button>
+      </div>
+    </div>
+  </body>
+</html>

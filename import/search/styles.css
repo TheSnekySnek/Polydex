@@ -1,0 +1,164 @@
+body {
+  font-family: Sans-Serif;
+}
+#searcher{
+  width: 600px;
+  height: 60px;
+  border-color: transparent;
+  padding-left: 20px;
+  padding-right: 150px;
+  font-size: 21px;
+  background-color: rgba(64, 75, 78, 0.95);
+  color: white;
+}
+input:focus{
+  outline: none;
+}
+.barIcon{
+  position: absolute;
+  top: 49px;
+  right: 45px;
+  color: white;
+  width: 150px
+}
+.barIcon > .icon{
+  float: right;
+}
+.barIcon > .icon:hover{
+  cursor: pointer;
+}
+body, html, .container{
+  background-color: transparent;
+  overflow: hidden;
+}
+.topbar{
+  background-color: rgb(54, 62, 64);
+  max-height: 25px;
+  border-radius: 5px 5px 0px 0px;
+  height: 25px;
+  width: 744px;
+  color: white;
+  padding: 0px 15px;
+}
+.topbar > p{
+  float: left;
+  margin: 0;
+  padding-top: 4px;
+}
+.topbar > i{
+  float: right;
+  padding-top: 4px;
+}
+.settings{
+  background-color: #2f3435;
+  position: absolute;
+  top: 33px;
+  height: 400px;
+  width: 774px;
+}
+.settings > button{
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  color: white;
+  border: none;
+  background-color: #42686f;
+  padding: 8px 17px;
+  border-radius: 2px;
+}
+.settings > button:hover{
+  cursor: pointer;
+}
+.set-categories{
+  float: left;
+  background-color: #414c4e;
+  height: 100%;
+  width: 110px;
+  color: white;
+}
+.set-categories > ul{
+  list-style-type: none;
+}
+.set-categories > div{
+  padding: 20px 0;
+  text-align: center;
+  border-bottom: 1px solid #636d6f;
+}
+.set-categories > div:not(.cat-active):hover{
+  background-color: #636d6f;
+  cursor: pointer;
+}
+.set-categories .cat-active{
+  background-color: #2f3435;
+}
+.forminput{
+  position: relative;
+  padding: 10px 15px;
+  color: white;
+}
+.cat-general{
+  float:left;
+  padding: 20px;
+}
+.forminput > p{
+  padding-top: 0;
+  margin-top: 2px;
+  margin-left: 30px;
+}
+.magic-checkbox+label:before {
+  background-color: #a5afb1;
+}
+.openBtn{
+  position: absolute;
+  right: 15px;
+  top: 32px;
+  width: 35px;
+  height: 35px;
+}
+.pathBtn{
+  position: absolute;
+  right: 65px;
+  top: 32px;
+  height: 35px;
+  width: 35px;
+}
+.document-item > .fname{
+  font-weight: 700;
+  position: absolute;
+  top: 10px;
+  left: 90px;
+}
+.document-item > .fpath{
+  font-size: 10px;
+  position: absolute;
+  bottom: 10px;
+  left: 90px;
+}
+.document-item > i{
+  position: absolute;
+  top: 50%;
+  margin-top: -32px;
+  left: 15px;
+}
+.document-item{
+  height: 100px;
+  position: relative;
+}
+.results{
+  background-color: #5e6f73!important;
+  max-height: 400px;
+  color: white;
+}
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
