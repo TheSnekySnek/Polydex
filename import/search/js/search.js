@@ -1,3 +1,6 @@
+
+var lBounds;
+
 function openFile(loc) {
   loc = decodeURIComponent(loc);
   console.log(loc);
@@ -22,7 +25,9 @@ $(document).ready(function () {
 
   $("#settingsBtn").click(function() {
     var win = remote.getCurrentWindow();
-    var bounds = win.getBounds();
+    lBounds = win.getBounds();
+    console.log(lBounds);
+    var bounds = lBounds;
     bounds.height = 440;
     win.setBounds(bounds);
     $('.settings').show();
@@ -31,10 +36,9 @@ $(document).ready(function () {
   $("#settingsDoneBtn").click(function() {
     $('.settings').hide();
     var win = remote.getCurrentWindow();
-    var bounds = win.getBounds();
-    bounds.height = 107;
     setTimeout(function() {
-      win.setBounds(bounds);
+      console.log(lBounds);
+      win.setBounds(lBounds);
     }, 500);
   });
 
