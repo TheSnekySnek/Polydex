@@ -17,6 +17,10 @@ $(document).ready(function () {
   const remote = require('electron').remote;
   const electron = require('electron');
   const search = require('../modules/search').search;
+  /*var db = new PouchDB('http://dev.villagrasa.ch:4444/polydex');
+  db.info().then(function (info) {
+    console.log(info);
+  })*/
   $("#closeBtn").click(function() {
     console.log("click");
     var window = remote.getCurrentWindow();
@@ -84,7 +88,7 @@ $(document).ready(function () {
               }
 
               console.log("hap");
-              var htTemplate = '<div class="document-item"><i class="fa fa-file fa-4x"></i><p class="fname">'+fname+'</p><p class="fpath">'+docs[i][y].path+'</p><button onClick="openLocation(\''+escape(docs[i][y].path.replace(fname, ""))+'\');" class="pathBtn" type="button" name="button"></button> <button class="openBtn" type="button" name="button" onClick="openFile(\''+escape(docs[i][y].path)+'\');"></button> </div>'
+              var htTemplate = '<div class="document-item"><i class="fa fa-file fa-4x"></i><p class="fname">'+fname+'</p><p class="fpath">'+docs[i][y].path+'</p><button onClick="openLocation(\''+escape(docs[i][y].path.replace(fname, ""))+'\');" class="pathBtn" type="button" name="button"><i class="fa fa-folder-open" aria-hidden="true"></i></button> <button class="openBtn" type="button" name="button" onClick="openFile(\''+escape(docs[i][y].path)+'\');"><i class="fa fa-pencil" aria-hidden="true"></i></button> </div>'
               $(".results").append(htTemplate);
             }
           }

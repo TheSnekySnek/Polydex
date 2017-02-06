@@ -15,6 +15,11 @@
 
   var chokidar = require('chokidar');
 
+  var PouchDB = require('pouchdb');
+  var dba = new PouchDB('http://dev.villagrasa.ch:4444/test');
+  dba.info().then(function (info) {
+    console.log(info);
+  })
   process.send("in");
 
 

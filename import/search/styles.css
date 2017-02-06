@@ -145,9 +145,12 @@ body, html, .container{
   position: relative;
 }
 .results{
-  background-color: #5e6f73!important;
+  background-color: rgba(94,111,115,0.95)!important;
   max-height: 400px;
   color: white;
+}
+button{
+  cursor: pointer;
 }
 ::-webkit-scrollbar {
     width: 12px;
