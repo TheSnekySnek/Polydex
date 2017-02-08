@@ -13,10 +13,12 @@
   var readfiles = [];
   var defWords = [];
 
+  var user = "testuser"
+
   var chokidar = require('chokidar');
 
   var PouchDB = require('pouchdb');
-  var dba = new PouchDB('http://dev.villagrasa.ch:4444/test');
+  var dba = new PouchDB('http://dev.villagrasa.ch:4444/'+ user);
   dba.info().then(function (info) {
     console.log(info);
   })
@@ -33,6 +35,7 @@
     var fname = path.split("\\");
     console.log(fname[fname.length-1]);
     var deords = {
+      "_id": random32bit(),
       "word": fname[fname.length-1],
       "matches":
       [{"line": -1,
@@ -41,11 +44,21 @@
       }]
 
     };
-
+    dba.put(deords);
     search.insertDocument(deords, function(){
       process.send(index);
     });
   });
+
+  function random32bit() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 32; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+  }
 
   watcher
     .on('change', path => console.log(`File ${path} has been changed`))
@@ -76,13 +89,13 @@
                 if(/^[a-zA-Z]{3,}$/.test(words[y])){
 
                   var deords = {
+                    _id: random32bit(),
                     word: removeDiacritics(words[y]).toLowerCase(),
                     matches:
                     [{line: i,
                       path: entry,
                       source: "Local"
                     }]
-
                   };
 
                   search.insertDocument(deords, function(){
