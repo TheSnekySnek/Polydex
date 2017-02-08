@@ -1,21 +1,17 @@
 {
-  "name": "electron-quick-start",
+  "name": "polydex",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Indexer",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/diegovillagrasa/polydex",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "Polydex"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "Diego Villagrasa",
+  "license": "Apache",
   "devDependencies": {
     "electron": "^1.4.1"
   },
