@@ -191,6 +191,40 @@ button{
   //width: 50px;
   text-align: center;
 }
+.addSourceDiv{
+  position: absolute;
+  top: 0;
+  background-color: rgba(53, 59, 60, 0.95);
+  width: 664px;
+  height: 100%;
+  z-index: 9;
+}
+.providerTable{
+  position: absolute;
+  top: 40px;
+  background-color: #333535;
+  left: 30px;
+  width: 235px;
+  height: 300px;
+  color: white;
+}
+.providerConnect{
+  position: absolute;
+  top: 165px;
+  right: 130px;
+  color: white;
+  border: none;
+  background-color: #42bd6c;
+  padding: 10px 30px;
+  font-size: 20px;
+  border-radius: 2px;
+}
+.providerTable > table tr >td:first-of-type{
+  text-align: center;
+}
+.providerTable > table{
+  width: 100%;
+}
 /*.sourceTable > tr > td:nth-of-type(2){
   width: 150px;
 }

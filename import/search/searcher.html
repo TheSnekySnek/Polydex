@@ -50,7 +50,6 @@
             <input class="magic-checkbox" type="checkbox" name="layout" id="1" value="option">
             <label for="1"></label>
             <p>Search while typing</p>
-
           </div>
 
 
@@ -67,11 +66,19 @@
             </table>
           </div>
           <div class="btmsrc">
-            <button type="button" name="button" class="addSourceBtn"><i class="fa fa-plus" aria-hidden="true" style="padding-right:2px;"></i> Add Source</button>
+            <button type="button" name="button" class="addSourceBtn" onclick="$('.addSourceDiv').show()"><i class="fa fa-plus" aria-hidden="true" style="padding-right:2px;"></i> Add Source</button>
           </div>
 
           <div class="addSourceDiv" style="display:none">
-
+            <div class="providerTable">
+              <table>
+                <tr v-for="provider in providers">
+                  <td><i class="fa" :class="provider.icon" aria-hidden="true"></i></td>
+                  <td><p>{{provider.name}}</p></td>
+                </tr>
+              </table>
+            </div>
+            <button type="button" name="button" class="providerConnect">Connect</button>
           </div>
         </div>
         <button id="settingsDoneBtn" type="button" name="button">Done</button>

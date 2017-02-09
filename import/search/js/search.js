@@ -33,6 +33,18 @@ $(document).ready(function () {
       ]
     }
   });
+  var providersModel = new Vue({
+    el: '.providerTable',
+    data:{
+      providers: [
+        {name: "Local", icon: "fa-folder"},
+        {name: "Dropbox", icon: "fa-dropbox"},
+        {name: "Google", icon: "fa-google"},
+        {name: "OneDrive", icon: "fa-windows"},
+        {name: "Github", icon: "fa-github"}
+      ]
+    }
+  });
   loadSources();
 
   $("#closeBtn").click(function() {
