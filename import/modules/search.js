@@ -36,7 +36,6 @@ exports.search = function(q, callback) {
       });
     });
     var rq = require("request");
-    require('ssl-root-cas').inject();
     rq({url:"https://dev.villagrasa.ch/testuser/dropbox/search/" + q, "rejectUnauthorized": false}, function(error, response, body) {
       console.log(error);
       var response = JSON.parse(body);

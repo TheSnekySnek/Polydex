@@ -16,6 +16,7 @@
     "electron": "^1.4.1"
   },
   "dependencies": {
+    "electron-json-storage": "^3.0.1",
     "electron-require": "^0.3.0",
     "nedb": "^1.8.0"
   }

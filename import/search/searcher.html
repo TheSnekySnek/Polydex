@@ -11,6 +11,7 @@
     <script src="js/jquery.js" charset="utf-8"></script>
     <script src="js/search.js" charset="utf-8"></script>
     <script src="js/pouchdb-6.1.1.js" charset="utf-8"></script>
+    <script src="js/vue.js"></script>
     <script>if (window.module) module = window.module;</script>
   </head>
   <body>
@@ -20,9 +21,18 @@
         <i id="closeBtn" class="fa fa-window-close" aria-hidden="true" style="-webkit-app-region: no-drag"></i>
       </div>
       <div class="barIcon">
-        <span class="icon is-medium">
-          <i id="settingsBtn" class="fa fa-cogs fa-2x" aria-hidden="true"></i>
-        </span>
+        <i id="settingsBtn" class="fa fa-cogs fa-2x" aria-hidden="true"></i>
+        <i id="filterBtn" class="fa fa-filter fa-2x" aria-hidden="true"></i>
+      </div>
+      <div class="filterDiv">
+        <div class="arrow-up"></div>
+        <div class="filterDialog">
+          <div v-for="source in sources">
+            <i class="fa" :class="source.icon" aria-hidden="true"></i>
+            <p>{{source.name}}</p>
+            <input type="checkbox" :checked="source.enabled">
+          </div>
+        </div>
       </div>
       <div class="search">
         <input type="text" name="searcher" id="searcher" value="" autofocus placeholder="Looking for something ?">
@@ -45,14 +55,24 @@
 
 
         </div>
-        <div class="cat-sources">
-          <table class="sourceTable">
-            	<tr>
-            	  <td>type</td>
-                <td>path</td>
-                <td>enabled</td>
-            	</tr>
-          </table>
+        <div class="cat-sources" style="display:none">
+          <div class="tableContainer">
+            <table class="sourceTable">
+              	<tr v-for="source in sources">
+                  <td><i class="fa" :class="source.icon" aria-hidden="true"></i></td>
+                  <td><p>{{source.name}}</p></td>
+                  <td>{{source.account}}</td>
+                  <td><i class="fa fa-trash" aria-hidden="true"></i></td>
+              	</tr>
+            </table>
+          </div>
+          <div class="btmsrc">
+            <button type="button" name="button" class="addSourceBtn"><i class="fa fa-plus" aria-hidden="true" style="padding-right:2px;"></i> Add Source</button>
+          </div>
+
+          <div class="addSourceDiv" style="display:none">
+
+          </div>
         </div>
         <button id="settingsDoneBtn" type="button" name="button">Done</button>
       </div>

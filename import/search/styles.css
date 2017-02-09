@@ -16,10 +16,7 @@ input:focus{
 }
 .barIcon{
   position: absolute;
-  top: 49px;
-  right: 45px;
   color: white;
-  width: 150px
 }
 .barIcon > .icon{
   float: right;
@@ -58,7 +55,7 @@ body, html, .container{
 }
 .settings > button{
   position: absolute;
-  bottom: 15px;
+  bottom: 10px;
   right: 20px;
   color: white;
   border: none;
@@ -99,6 +96,9 @@ body, html, .container{
 .cat-general{
   float:left;
   padding: 20px;
+}
+.cat-sources{
+  float: left;
 }
 .forminput > p{
   padding-top: 0;
@@ -152,6 +152,52 @@ body, html, .container{
 button{
   cursor: pointer;
 }
+#settingsBtn{
+  position: absolute;
+  left: 710px;
+  top: 15px;
+}
+#filterBtn{
+  position: absolute;
+  left: 650px;
+  top: 15px;
+}
+.tableContainer{
+  height: 300px;
+  background-color: #424546;
+  width: 630px;
+  margin: 15px;
+  color: white;
+}
+.addSourceBtn{
+  color: white;
+  border: none;
+  background-color: #42686f;
+  padding: 6px 12px;
+  border-radius: 2px;
+  margin: 4px;
+}
+.btmsrc{
+  background-color: #414c4e;
+  margin-top: -15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  height: 35px;
+}
+.sourceTable{
+  width: 100%;
+}
+.sourceTable  tr > td:nth-of-type(1){
+  //width: 50px;
+  text-align: center;
+}
+/*.sourceTable > tr > td:nth-of-type(2){
+  width: 150px;
+}
+.sourceTable > tr > td:nth-of-type(4){
+  float: right;
+}*/
+
 ::-webkit-scrollbar {
     width: 12px;
 }

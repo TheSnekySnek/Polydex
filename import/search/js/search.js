@@ -17,10 +17,24 @@ $(document).ready(function () {
   const remote = require('electron').remote;
   const electron = require('electron');
   const search = require('../modules/search').search;
-  /*var db = new PouchDB('http://dev.villagrasa.ch:4444/polydex');
-  db.info().then(function (info) {
-    console.log(info);
-  })*/
+  var sourcesModel = new Vue({
+    el: '.filterDialog',
+    data:{
+      sources: []
+    }
+  });
+  var settingsSrcModel = new Vue({
+    el: '.sourceTable',
+    data:{
+      sources: [
+        {name: "Local", icon: "fa-folder", account:"/test/test/123"},
+        {name: "Dropbox", icon: "fa-dropbox", account:"testuser"},
+        {name: "Google", icon: "fa-google", account:"testuser"}
+      ]
+    }
+  });
+  loadSources();
+
   $("#closeBtn").click(function() {
     console.log("click");
     var window = remote.getCurrentWindow();
@@ -104,4 +118,20 @@ $(document).ready(function () {
   $('#searcher').on('input', function() {
 
   });
+
+  function loadSources() {
+    const storage = require('electron-json-storage');
+    storage.get('sources', function(error, data) {
+      if (error){
+        console.log("No sources");
+      }
+      else{
+        sourcesModel.sources = data.sources;
+        console.log(data);
+      }
+    });
+  }
+
+
+
 });
