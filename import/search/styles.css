@@ -168,6 +168,7 @@ button{
   width: 630px;
   margin: 15px;
   color: white;
+  overflow: auto;
 }
 .addSourceBtn{
   color: white;
@@ -207,6 +208,7 @@ button{
   width: 235px;
   height: 300px;
   color: white;
+  overflow: auto;
 }
 .providerConnect{
   position: absolute;
@@ -219,8 +221,26 @@ button{
   font-size: 20px;
   border-radius: 2px;
 }
+.providerCancel{
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  color: white;
+  border: none;
+  background-color: #bd4242;
+  padding: 8px 17px;
+  font-size: 16px;
+  border-radius: 2px;
+}
 .providerTable > table tr >td:first-of-type{
   text-align: center;
+}
+.providerTable > table tr.active{
+  background-color: #4c5252;
+}
+.providerTable > table tr:hover:not(.active){
+  background-color: #616969;
+  cursor: pointer;
 }
 .providerTable > table{
   width: 100%;

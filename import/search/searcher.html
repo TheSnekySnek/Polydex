@@ -24,7 +24,7 @@
         <i id="settingsBtn" class="fa fa-cogs fa-2x" aria-hidden="true"></i>
         <i id="filterBtn" class="fa fa-filter fa-2x" aria-hidden="true"></i>
       </div>
-      <div class="filterDiv">
+      <div class="filterDiv" style="display: none">
         <div class="arrow-up"></div>
         <div class="filterDialog">
           <div v-for="source in sources">
@@ -57,11 +57,11 @@
         <div class="cat-sources" style="display:none">
           <div class="tableContainer">
             <table class="sourceTable">
-              	<tr v-for="source in sources">
+              	<tr v-for="(source, index) in sources" :data-index="index">
                   <td><i class="fa" :class="source.icon" aria-hidden="true"></i></td>
                   <td><p>{{source.name}}</p></td>
                   <td>{{source.account}}</td>
-                  <td><i class="fa fa-trash" aria-hidden="true"></i></td>
+                  <td><i class="fa fa-trash" aria-hidden="true" onclick="console.log($(this).parent().parent().attr('data-index')); deleteSource($(this).parent().parent().attr('data-index'));"></i></td>
               	</tr>
             </table>
           </div>
@@ -71,14 +71,15 @@
 
           <div class="addSourceDiv" style="display:none">
             <div class="providerTable">
-              <table>
-                <tr v-for="provider in providers">
+              <table cellspacing="0" cellpadding="0">
+                <tr v-for="provider in providers" onclick="$('.providerTable tr').removeClass('active'); $(this).addClass('active')" v-bind:class="{ active: provider.default }">
                   <td><i class="fa" :class="provider.icon" aria-hidden="true"></i></td>
                   <td><p>{{provider.name}}</p></td>
                 </tr>
               </table>
             </div>
-            <button type="button" name="button" class="providerConnect">Connect</button>
+            <button type="button" name="button" class="providerConnect" onclick="connectToService()">Connect</button>
+            <button type="button" name="button" class="providerCancel" onclick="$('.addSourceDiv').hide()">Cancel</button>
           </div>
         </div>
         <button id="settingsDoneBtn" type="button" name="button">Done</button>

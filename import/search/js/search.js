@@ -1,6 +1,76 @@
 
 var lBounds;
+var settingsSrcModel;
+var providersModel;
+const remote = require('electron').remote;
+const electron = require('electron');
+function connectToService() {
+  var sType = $('.providerTable > table tr.active > td:nth-of-type(2)').text();
 
+  switch (sType) {
+    case "Local":
+      const {dialog} = require('electron').remote;
+      var dir = dialog.showOpenDialog({properties: ['openDirectory']});
+      settingsSrcModel.sources.push({name: "Local", icon: "fa-folder", account: dir});
+      saveSources();
+      break;
+    case "Google":
+
+      break;
+    case "Dropbox":
+    const BrowserWindow = remote.BrowserWindow;
+    conWindow = new BrowserWindow({width: 800, height: 600, frame: false, transparent: false})
+    conWindow.loadURL("https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=5reu87si7378b0x&redirect_uri=https://dev.villagrasa.ch/oauth/dropbox&state=testuser");
+
+    checkDropboxAdded(function() {
+      conWindow.close();
+    });
+      break;
+    case "OneDrive":
+
+      break;
+    case "Github":
+
+      break;
+    default:
+
+  }
+  setTimeout(function() {
+    $('.addSourceDiv').hide();
+    loadSources();
+  }, 500);
+}
+function checkDropboxAdded(callback) {
+
+}
+function saveSources() {
+  const storage = require('electron-json-storage');
+    storage.set('sources', settingsSrcModel.sources, function(error) {
+    if (error){
+      console.log(error);
+    }
+  });
+}
+function loadSources() {
+  const storage = require('electron-json-storage');
+  storage.get('sources', function(error, data) {
+    if (error){
+      console.log(error);
+    }
+    else{
+      settingsSrcModel.sources = data;
+      console.log(data);
+    }
+  });
+}
+function deleteSource(index) {
+  settingsSrcModel.sources.splice(index, 1);
+  console.log(settingsSrcModel.sources);
+  saveSources();
+  setTimeout(function() {
+    loadSources();
+  }, 500);
+}
 function openFile(loc) {
   loc = decodeURIComponent(loc);
   console.log(loc);
@@ -14,30 +84,31 @@ function openLocation(loc) {
   exec("start " + loc);
 }
 $(document).ready(function () {
-  const remote = require('electron').remote;
-  const electron = require('electron');
+
+
   const search = require('../modules/search').search;
-  var sourcesModel = new Vue({
-    el: '.filterDialog',
-    data:{
-      sources: []
-    }
-  });
-  var settingsSrcModel = new Vue({
+  settingsSrcModel = new Vue({
     el: '.sourceTable',
     data:{
-      sources: [
-        {name: "Local", icon: "fa-folder", account:"/test/test/123"},
-        {name: "Dropbox", icon: "fa-dropbox", account:"testuser"},
-        {name: "Google", icon: "fa-google", account:"testuser"}
-      ]
-    }
+      sources: []
+    },
+    methods : {
+
+            delete : function (deleteIndex) {
+              settingsSrcModel.sources.splice(deleteIndex, 1);
+              console.log(settingsSrcModel.sources);
+              saveSources();
+              setTimeout(function() {
+                loadSources();
+              }, 500);
+            }
+        }
   });
-  var providersModel = new Vue({
+  providersModel = new Vue({
     el: '.providerTable',
     data:{
       providers: [
-        {name: "Local", icon: "fa-folder"},
+        {name: "Local", icon: "fa-folder", default: true},
         {name: "Dropbox", icon: "fa-dropbox"},
         {name: "Google", icon: "fa-google"},
         {name: "OneDrive", icon: "fa-windows"},
@@ -45,8 +116,6 @@ $(document).ready(function () {
       ]
     }
   });
-  loadSources();
-
   $("#closeBtn").click(function() {
     console.log("click");
     var window = remote.getCurrentWindow();
@@ -54,6 +123,7 @@ $(document).ready(function () {
   });
 
   $("#settingsBtn").click(function() {
+    loadSources();
     var win = remote.getCurrentWindow();
     lBounds = win.getBounds();
     console.log(lBounds);
@@ -127,23 +197,4 @@ $(document).ready(function () {
       });
     }
 });
-  $('#searcher').on('input', function() {
-
-  });
-
-  function loadSources() {
-    const storage = require('electron-json-storage');
-    storage.get('sources', function(error, data) {
-      if (error){
-        console.log("No sources");
-      }
-      else{
-        sourcesModel.sources = data.sources;
-        console.log(data);
-      }
-    });
-  }
-
-
-
 });
