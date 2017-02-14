@@ -18,37 +18,32 @@
   var chokidar = require('chokidar');
 
   var PouchDB = require('pouchdb');
-  var dba = new PouchDB('http://dev.villagrasa.ch:4444/'+ user);
+  var dba = new PouchDB('http://polydex.io:4444/'+ user);
   dba.info().then(function (info) {
     console.log(info);
   })
-  process.send("in");
+  console.log("in");
 
 
-
-  var watcher = chokidar.watch("C://Users/dev/Documents/Mose", {
-    ignored: /^.*\.(mose)$/,
-    persistent: true
+  const storage = require('electron-json-storage');
+  storage.get('sources', function(error, data) {
+    if (error){
+      console.log(error);
+    }
+    else {
+      for (var i = 0; i < data.length; i++) {
+        console.log(data[i]);
+        if(data[i].name == "Local"){
+          console.log(data[i].account);
+          watchDir(data[i].account[0]);
+        }
+      }
+    }
   });
 
-  watcher.on('add', (path) => {
-    var fname = path.split("\\");
-    console.log(fname[fname.length-1]);
-    var deords = {
-      "_id": random32bit(),
-      "word": fname[fname.length-1],
-      "matches":
-      [{"line": -1,
-        "path": path,
-        "source": "Local"
-      }]
 
-    };
-    dba.put(deords);
-    search.insertDocument(deords, function(){
-      process.send(index);
-    });
-  });
+
+
 
   function random32bit() {
     var text = "";
@@ -60,59 +55,84 @@
     return text;
   }
 
-  watcher
-    .on('change', path => console.log(`File ${path} has been changed`))
-    .on('unlink', path => console.log(`File ${path} has been removed`));
 
-  var watchedPaths = watcher.getWatched();
-  process.send(watchedPaths);
+  function watchDir(dpath) {
 
+    var watcher = chokidar.watch(dpath, {
+      ignored: /^.*\.(mose)$/,
+      persistent: true
+    });
 
-  recursive("C://Users/dev/Documents/Mose", function (err, files) {
-    process.send(err);
-    files.forEach(function(entry) {
+    watcher.on('add', (path) => {
+      var fname = path.split("\\");
+      console.log(fname[fname.length-1]);
+      var deords = {
+        "_id": random32bit(),
+        "word": fname[fname.length-1],
+        "matches":
+        [{"line": -1,
+          "path": path,
+          "source": "Local"
+        }]
 
-      if(entry.indexOf(".txt") > 0){
+      };
+      //dba.put(deords);
+      search.insertDocument(deords, function(){
+        console.log(index);
+      });
+    });
 
-        fs.readFile(entry, "utf-8", function(err, data) {
-          process.send(entry);
-          var lines = data.split(/\r?\n/);
-          if(lines != null){
+    recursive(dpath, function (err, files) {
+      console.log(err);
+      if(files){
+      files.forEach(function(entry) {
 
-          for (var i = 0; i < lines.length; i++) {
+        if(entry.indexOf(".txt") > 0){
 
-              var curline = lines[i];
-              var words = curline.match(/("[^"]+"|[^"\s]+)/g);
+          fs.readFile(entry, "utf-8", function(err, data) {
+          console.log(entry);
+            var lines = data.split(/\r?\n/);
+            if(lines != null){
 
-              if(words != null){
-              for (var y = 0; y < words.length; y++) {
-                if(/^[a-zA-Z]{3,}$/.test(words[y])){
+            for (var i = 0; i < lines.length; i++) {
 
-                  var deords = {
-                    _id: random32bit(),
-                    word: removeDiacritics(words[y]).toLowerCase(),
-                    matches:
-                    [{line: i,
-                      path: entry,
-                      source: "Local"
-                    }]
-                  };
+                var curline = lines[i];
+                var words = curline.match(/("[^"]+"|[^"\s]+)/g);
 
-                  search.insertDocument(deords, function(){
-                    process.send(index);
-                  });
+                if(words != null){
+                for (var y = 0; y < words.length; y++) {
+                  if(/^[a-zA-Z]{3,}$/.test(words[y])){
+
+                    var deords = {
+                      _id: random32bit(),
+                      word: removeDiacritics(words[y]).toLowerCase(),
+                      matches:
+                      [{line: i,
+                        path: entry,
+                        source: "Local"
+                      }]
+                    };
+
+                    search.insertDocument(deords, function(){
+                      console.log(index);
+                    });
+                  }
                 }
               }
+              }
             }
-            }
-          }
-        });
-      }
-      else{
+          });
+        }
+        else{
 
-      }
+        }
+      });
+    }
     });
-  });
+  }
+
+
+
 
 
   function removeDiacritics (str) {

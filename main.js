@@ -15,13 +15,13 @@ let mainWindow
 function startApp() {
   var cp = require('child_process');
   //var gazer = require('./import/modules/watcher');
-  var child = cp.fork('./import/modules/index');
+  require('./import/modules/index');
   console.log("started index");
 
-  child.on('message', function(m) {
+  /*child.on('message', function(m) {
     // Receive results from child process
     console.log(m);
-  });
+  });*/
 
   mainWindow = new BrowserWindow({width: 800, height: 107, frame: false, transparent: true})
   mainWindow.loadURL(url.format({

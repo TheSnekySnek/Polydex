@@ -57,7 +57,7 @@ function loadSources() {
     if (error){
       console.log(error);
     }
-    else{
+    else if(data.length > 0){
       settingsSrcModel.sources = data;
       console.log(data);
     }

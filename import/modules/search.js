@@ -36,7 +36,7 @@ exports.search = function(q, callback) {
       });
     });
     var rq = require("request");
-    rq({url:"https://dev.villagrasa.ch/testuser/dropbox/search/" + q, "rejectUnauthorized": false}, function(error, response, body) {
+    rq({url:"https://polydex.io/testuser/dropbox/search/" + q, "rejectUnauthorized": false}, function(error, response, body) {
       console.log(error);
       var response = JSON.parse(body);
       console.log(response);
@@ -60,7 +60,7 @@ exports.insertKeyword = function(q){
 
 exports.insertDocument = function(doc, callback) {
   db.update({ "word": doc.word, $not:{ $and: [{"matches.document.line": doc.matches[0].line, "matches.document.path": doc.matches[0].path}]}}, { $push: {"matches": doc.matches[0]} }, {upsert: true}, function () {
-    process.send("updated");
+    console.log("updated");
     callback();
   });
 }
