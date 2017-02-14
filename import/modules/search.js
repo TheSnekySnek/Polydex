@@ -36,7 +36,7 @@ exports.search = function(q, callback) {
       });
     });
     var rq = require("request");
-    rq({url:"https://polydex.io/testuser/dropbox/search/" + q, "rejectUnauthorized": false}, function(error, response, body) {
+    rq({url:"https://polydex.io/testuser/dropbox/search/" + q}, function(error, response, body) {
       console.log(error);
       var response = JSON.parse(body);
       console.log(response);
