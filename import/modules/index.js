@@ -1,5 +1,5 @@
 
-process.send("test");
+console.log("test");
 
   var path = "C://Users/dev";
 
@@ -22,13 +22,13 @@ process.send("test");
   dba.info().then(function (info) {
     console.log(info);
   })
-  process.send("in");
+  console.log("in");
 
 
-  const storage = require('electron-json-storage');
-  process.send("a")
+  var storage = require('electron-json-storage');
+  console.log("a")
   storage.get('sources', function(error, data) {
-    process.send("sas");
+    console.log("sas");
     if (error){
       console.log(error);
     }
@@ -37,7 +37,7 @@ process.send("test");
         console.log(data[i]);
         if(data[i].name == "Local"){
           console.log(data[i].account);
-          process.send(data[i].account)
+          console.log(data[i].account)
           watchDir(data[i].account[0]);
         }
       }

@@ -18,13 +18,12 @@ function connectToService() {
 
       break;
     case "Dropbox":
+    var token = makeid();
     const BrowserWindow = remote.BrowserWindow;
     conWindow = new BrowserWindow({width: 800, height: 600, frame: false, transparent: false})
-    conWindow.loadURL("https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=5reu87si7378b0x&redirect_uri=https://dev.villagrasa.ch/oauth/dropbox&state=testuser");
+    conWindow.loadURL("https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=5reu87si7378b0x&redirect_uri=https://polydex.io/oauth/dropbox&state=" + token);
 
-    checkDropboxAdded(function() {
-      conWindow.close();
-    });
+    checkDropboxAdded(token, conWindow);
       break;
     case "OneDrive":
 
@@ -40,8 +39,23 @@ function connectToService() {
     loadSources();
   }, 500);
 }
-function checkDropboxAdded(callback) {
-
+function checkDropboxAdded(token, bwindow) {
+  var rq = require('request');
+  rq.post({url: "https://polydex.io/listener", form:{"token": token}},
+  function (err,httpResponse,body) {
+    if(body != "err"){
+      var resp = JSON.parse(body);
+      console.log(resp);
+      settingsSrcModel.sources.push({name: "Dropbox", icon: "fa-dropbox", account: "", "data": resp});
+      saveSources();
+      bwindow.close();
+    }
+    else{
+      setTimeout(function() {
+        checkDropboxAdded(token, bwindow);
+      }, 1000);
+    }
+  });
 }
 function saveSources() {
   const storage = require('electron-json-storage');
@@ -63,6 +77,17 @@ function loadSources() {
     }
   });
 }
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 32; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 function deleteSource(index) {
   settingsSrcModel.sources.splice(index, 1);
   console.log(settingsSrcModel.sources);
