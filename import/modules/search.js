@@ -7,6 +7,21 @@ db.loadDatabase(function (err) {
   db.persistence.setAutocompactionInterval(10000)
 });
 
+var sources;
+loadSources();
+function loadSources() {
+  const storage = require('electron-json-storage');
+  storage.get('sources', function(error, data) {
+    if (error){
+      console.log(error);
+    }
+    else if(data.length > 0){
+      sources = data;
+      console.log(data);
+    }
+  });
+}
+
 Array.prototype.unique = function() {
   var re = this;
   var arr = {};
@@ -27,7 +42,6 @@ exports.search = function(q, callback) {
     db.loadDatabase(function (err) {
       console.log("re");
       db.find({ "word": reg }, function (err, docs) {
-
         for (var i = 0; i < docs.length; i++) {
           res.push(docs[i].matches.unique());
         }
@@ -35,22 +49,14 @@ exports.search = function(q, callback) {
         callback(res);
       });
     });
-    var rq = require("request");
-    rq({url:"https://polydex.io/testuser/dropbox/search/" + q}, function(error, response, body) {
-      console.log(error);
-      var response = JSON.parse(body);
-      console.log(response);
-      console.log(error);
-      for (var t = 0; t < response.matches.length; t++) {
-        var doc =
-          [{"line": -1,
-            "path": response.matches[t].metadata.path_lower,
-            "source": "Dropbox"
-          }];
-          res.push(doc);
-        }
-        callback(res);
-    });
+    var dropbox = require("./api/dropbox");
+    for (var i = 0; i < sources.length; i++) {
+      if(sources[i].name == "Dropbox"){
+        dropbox.search(q, sources[i].data.access_token, function(results) {
+          console.log(results);
+        });
+      }
+    }
   }
 }
 

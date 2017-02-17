@@ -16,7 +16,7 @@ function startApp() {
 
 
   var cp = require('child_process');
-  var ind = require('./import/modules/index');
+  //var ind = require('./import/modules/index');
   //var gazer = require('./import/modules/watcher');
   /*var child = cp.fork('./import/modules/index');
   console.log("started index");
