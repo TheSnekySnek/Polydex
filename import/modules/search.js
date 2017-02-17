@@ -52,8 +52,17 @@ exports.search = function(q, callback) {
     var dropbox = require("./api/dropbox");
     for (var i = 0; i < sources.length; i++) {
       if(sources[i].name == "Dropbox"){
+        console.log("s1");
         dropbox.search(q, sources[i].data.access_token, function(results) {
-          console.log(results);
+          for (var i = 0; i < results.length; i++) {
+            var doc =
+          [{"line": -1,
+            "path": results[i].metadata.path_lower,
+            "source": "Dropbox"
+          }];
+          res.push(doc);
+          callback(res);
+          }
         });
       }
     }

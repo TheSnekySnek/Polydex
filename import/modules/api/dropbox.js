@@ -1,6 +1,7 @@
 var rq = require("request");
 
 exports.search = function(query, access_token, callback) {
+  console.log("search");
   rq.post({url: "https://api.dropboxapi.com/2/files/search",
   headers: {
     "Authorization": "Bearer "+ access_token,
@@ -12,7 +13,7 @@ exports.search = function(query, access_token, callback) {
         "max_results": 100,
         "mode": "filename_and_content"}},
   function (err,httpResponse,body) {
-    callback(body);
+    callback(body.matches);
   });
 }
 
