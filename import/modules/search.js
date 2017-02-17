@@ -8,8 +8,8 @@ db.loadDatabase(function (err) {
 });
 
 var sources;
-loadSources();
-function loadSources() {
+
+exports.reload = function() {
   const storage = require('electron-json-storage');
   storage.get('sources', function(error, data) {
     if (error){
@@ -21,6 +21,8 @@ function loadSources() {
     }
   });
 }
+
+exports.reload();
 
 Array.prototype.unique = function() {
   var re = this;

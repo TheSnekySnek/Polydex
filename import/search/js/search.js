@@ -15,21 +15,17 @@ function connectToService() {
       saveSources();
       break;
     case "Google":
-
       break;
     case "Dropbox":
     var token = makeid();
     const BrowserWindow = remote.BrowserWindow;
     conWindow = new BrowserWindow({width: 800, height: 600, frame: false, transparent: false})
     conWindow.loadURL("https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=5reu87si7378b0x&redirect_uri=https://polydex.io/oauth/dropbox&state=" + token);
-
     checkDropboxAdded(token, conWindow);
       break;
     case "OneDrive":
-
       break;
     case "Github":
-
       break;
     default:
 
@@ -111,7 +107,7 @@ function openLocation(loc) {
 $(document).ready(function () {
 
 
-  const search = require('../modules/search').search;
+  const search = require('../modules/search');
   settingsSrcModel = new Vue({
     el: '.sourceTable',
     data:{
@@ -195,7 +191,7 @@ $(document).ready(function () {
   $(document).keypress(function(e) {
     if(e.which == 13) {
       console.log("searching");
-      search($('#searcher').val(), function(docs) {
+      search.search($('#searcher').val(), function(docs) {
         console.log(docs);
         $(".results").html("");
         $(".results").scrollTop(0);
