@@ -61,7 +61,7 @@ console.log("test");
 
   function watchDir(dpath) {
 
-    var watcher = chokidar.watch(dpath, {
+    /*var watcher = chokidar.watch(dpath, {
       ignored: /^.*\.(mose)$/,
       persistent: true
     });
@@ -77,17 +77,26 @@ console.log("test");
           "path": path,
           "source": "Local"
         }]
-
       };
       //dba.put(deords);
       search.insertDocument(deords, function(){
         console.log(index);
       });
-    });
+    });*/
 
-    recursive(dpath, function (err, files) {
+    function ignoreFunc(file, stats) {
+      // `file` is the absolute path to the file, and `stats` is an `fs.Stats`
+      // object returned from `fs.lstat()`.
+      console.log(file);
+      console.log(stats);
+      return true;
+    }
+
+    recursive(dpath, [ignoreFunc], function (err, files) {
       console.log(err);
-      if(files){
+      console.log(files);
+      if(!err && files){
+
       files.forEach(function(entry) {
 
         if(entry.indexOf(".txt") > 0){

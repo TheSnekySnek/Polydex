@@ -5,14 +5,23 @@ var providersModel;
 const remote = require('electron').remote;
 const electron = require('electron');
 function connectToService() {
+
   var sType = $('.providerTable > table tr.active > td:nth-of-type(2)').text();
 
   switch (sType) {
     case "Local":
       const {dialog} = require('electron').remote;
       var dir = dialog.showOpenDialog({properties: ['openDirectory']});
-      settingsSrcModel.sources.push({name: "Local", icon: "fa-folder", account: dir});
-      saveSources();
+      console.log(dir);
+      checkPermission (dir[0], 4, function(err, res) {
+        if(!err){
+          settingsSrcModel.sources.push({name: "Local", icon: "fa-folder", account: dir});
+          saveSources();
+        }
+        else{
+          console.log(err);
+        }
+      });
       break;
     case "Google":
       break;
@@ -35,6 +44,16 @@ function connectToService() {
     loadSources();
   }, 500);
 }
+var checkPermission = function (file, mask, cb){
+  var fs = require('fs');
+  fs.stat (file, function (error, stats){
+      if (error){
+          cb (error, false);
+      }else{
+          cb (null, !!(mask & parseInt ((stats.mode & parseInt ("777", 8)).toString (8)[0])));
+      }
+  });
+};
 function checkDropboxAdded(token, bwindow) {
   var rq = require('request');
   rq.post({url: "https://polydex.io/listener", form:{"token": token}},
