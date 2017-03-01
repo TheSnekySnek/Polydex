@@ -16,15 +16,6 @@ function startApp() {
 
 
   var cp = require('child_process');
-  var ind = require('./import/modules/index');
-  //var gazer = require('./import/modules/watcher');
-  /*var child = cp.fork('./import/modules/index');
-  console.log("started index");
-
-  child.on('message', function(m) {
-    // Receive results from child process
-    console.log(m);
-  });*/
 
   mainWindow = new BrowserWindow({width: 800, height: 107, frame: false, transparent: true})
   mainWindow.loadURL(url.format({
@@ -32,6 +23,31 @@ function startApp() {
     protocol: 'file:',
     slashes: true
   }))
+
+  mainWindow.webContents.on('did-finish-load', function() {
+    mainWindow.show();
+    var child = cp.fork('./import/modules/index');
+    child.on('message', function(m) {
+      // Receive results from child process
+      console.log(m);
+    });
+    setTimeout(function () {
+      var storage = require('electron-json-storage');
+      storage.get('sources', function(error, data) {
+        if (error){
+          console.log(error);
+        }
+        else {
+          for (var i = 0; i < data.length; i++) {
+            console.log(data[i]);
+            if(data[i].name == "Local"){
+              child.send(data[i].account[0]);
+            }
+          }
+        }
+      });
+    }, 5000)
+  });
 
   mainWindow.on('closed', function () {
     // Dereference the window object, usually you would store windows

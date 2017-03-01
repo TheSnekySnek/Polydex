@@ -4,7 +4,7 @@ var db = new Datastore({ filename: 'indexes.pdx'});
 console.log("init DB");
 db.loadDatabase(function (err) {
   ini = true;
-  db.persistence.setAutocompactionInterval(10000)
+  //db.persistence.setAutocompactionInterval(10000);
 });
 
 var sources;

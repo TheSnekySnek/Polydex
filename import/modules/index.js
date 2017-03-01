@@ -1,150 +1,81 @@
-
-console.log("test");
-
-  var path = "C://Users/dev";
-
-  var recursive = require('recursive-readdir');
-
-  var fs = require("fs");
-
-  var search = require("./search.js")
-
-  var index = 0;
-  var readfiles = [];
-  var defWords = [];
-
-  var user = "testuser"
-
-  var chokidar = require('chokidar');
-
-  var PouchDB = require('pouchdb');
-  var dba = new PouchDB('http://polydex.io:4444/'+ user);
-  dba.info().then(function (info) {
-    console.log(info);
-  })
-  console.log("in");
+var fs = require("fs");
+var Mode = require('stat-mode');
+var Datastore = require('nedb');
+var ini = false;
+var db = new Datastore({ filename: 'indexes.pdx'});
+db.loadDatabase(function (err) {
+  ini = true;
+  db.persistence.setAutocompactionInterval(10000);
+});
 
 
-  var storage = require('electron-json-storage');
-  console.log("a")
-  storage.get('sources', function(error, data) {
-    console.log("sas");
-    if (error){
-      console.log(error);
-    }
-    else {
-      for (var i = 0; i < data.length; i++) {
-        console.log(data[i]);
-        if(data[i].name == "Local"){
-          console.log(data[i].account);
-          console.log(data[i].account)
-          watchDir(data[i].account[0]);
-        }
-      }
-    }
-  });
+process.on('message', function(m) {
+  watchDir(m);
+});
 
 
+function random32bit() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for( var i=0; i < 32; i++ )
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
 
 
+function watchDir(dpath) {
+  function indexFile(fpath) {
+    var fname = fpath.split("\\");
+    var fileModel = {
+      "_id": random32bit(),
+      "word": fname[fname.length-1],
+      "matches":
+      [{"line": -1,
+        "path": fpath,
+        "source": "Local"
+      }]
+    };
+    process.send(fpath);
+    insertDocument(fileModel, function(){
 
-  function random32bit() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for( var i=0; i < 32; i++ )
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
+    });
   }
 
-
-  function watchDir(dpath) {
-
-    /*var watcher = chokidar.watch(dpath, {
-      ignored: /^.*\.(mose)$/,
-      persistent: true
+  var insertDocument = function(doc, callback) {
+    db.update({ "word": doc.word, $not:{ $and: [{"matches.document.line": doc.matches[0].line, "matches.document.path": doc.matches[0].path}]}}, { $push: {"matches": doc.matches[0]} }, {upsert: true}, function () {
+      console.log("updated");
+      callback();
     });
+  }
 
-    watcher.on('add', (path) => {
-      var fname = path.split("\\");
-      console.log(fname[fname.length-1]);
-      var deords = {
-        "_id": random32bit(),
-        "word": fname[fname.length-1],
-        "matches":
-        [{"line": -1,
-          "path": path,
-          "source": "Local"
-        }]
-      };
-      //dba.put(deords);
-      search.insertDocument(deords, function(){
-        console.log(index);
-      });
-    });*/
+  // List all files in a directory recursively
+  var walkSync = function(dir) {
+         var path = path || require('path');
+         var fs = fs || require('fs')
+         var files = [];
+         try {
+           files = fs.readdirSync(dir);
+         } catch (e) {
+           process.send("PERMISSION ERROR");
+         }
 
-    function ignoreFunc(file, stats) {
-      // `file` is the absolute path to the file, and `stats` is an `fs.Stats`
-      // object returned from `fs.lstat()`.
-      console.log(file);
-      console.log(stats);
-      return true;
-    }
-
-    recursive(dpath, [ignoreFunc], function (err, files) {
-      console.log(err);
-      console.log(files);
-      if(!err && files){
-
-      files.forEach(function(entry) {
-
-        if(entry.indexOf(".txt") > 0){
-
-          fs.readFile(entry, "utf-8", function(err, data) {
-          console.log(entry);
-            var lines = data.split(/\r?\n/);
-            if(lines != null){
-
-            for (var i = 0; i < lines.length; i++) {
-
-                var curline = lines[i];
-                var words = curline.match(/("[^"]+"|[^"\s]+)/g);
-
-                if(words != null){
-                for (var y = 0; y < words.length; y++) {
-                  if(/^[a-zA-Z]{3,}$/.test(words[y])){
-
-                    var deords = {
-                      _id: random32bit(),
-                      word: removeDiacritics(words[y]).toLowerCase(),
-                      matches:
-                      [{line: i,
-                        path: entry,
-                        source: "Local"
-                      }]
-                    };
-
-                    search.insertDocument(deords, function(){
-                      console.log(index);
-                    });
-                  }
-                }
+         files.forEach(function(file) {
+            try {
+              if (fs.statSync(path.join(dir, file)).isDirectory()) {
+                  walkSync(path.join(dir, file));
               }
+              else {
+                  indexFile(path.join(dir, file));
               }
+            } catch (e) {
+              process.send("PERMISSION ERROR");
             }
-          });
-        }
-        else{
-
-        }
-      });
-    }
-    });
-  }
-
-
-
+         });
+     };
+     walkSync(dpath);
+}
 
 
   function removeDiacritics (str) {
