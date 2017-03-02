@@ -2,8 +2,15 @@
 var lBounds;
 var settingsSrcModel;
 var providersModel;
+/**
+ * Used to make calls to the main thread
+ */
 const remote = require('electron').remote;
 const electron = require('electron');
+
+/**
+ * Authentificate to a service
+ */
 function connectToService() {
 
   var sType = $('.providerTable > table tr.active > td:nth-of-type(2)').text();
@@ -44,6 +51,12 @@ function connectToService() {
     loadSources();
   }, 500);
 }
+/**
+ * Ch3cks if the directory/file can be accessed
+ * @param  {File}   file Directory/FIle path
+ * @param  {Int}   mask
+ * @param  {Function} cb
+ */
 var checkPermission = function (file, mask, cb){
   var fs = require('fs');
   fs.stat (file, function (error, stats){
@@ -54,6 +67,12 @@ var checkPermission = function (file, mask, cb){
       }
   });
 };
+
+/**
+ * Checks if the Dropbox account has been authorized
+ * @param  {String} token   Token used for authentification
+ * @param  {Window} bwindow [Authorization window]
+ */
 function checkDropboxAdded(token, bwindow) {
   var rq = require('request');
   rq.post({url: "https://polydex.io/listener", form:{"token": token}},
@@ -72,6 +91,10 @@ function checkDropboxAdded(token, bwindow) {
     }
   });
 }
+
+/**
+ * Save the sources
+ */
 function saveSources() {
   const storage = require('electron-json-storage');
     storage.set('sources', settingsSrcModel.sources, function(error) {
@@ -80,6 +103,10 @@ function saveSources() {
     }
   });
 }
+
+/**
+ * Load the sources
+ */
 function loadSources() {
   const storage = require('electron-json-storage');
   storage.get('sources', function(error, data) {
@@ -92,6 +119,11 @@ function loadSources() {
     }
   });
 }
+
+/**
+ * Creates a 32 character ID
+ * @return {[type]} [description]
+ */
 function makeid()
 {
     var text = "";
@@ -102,7 +134,11 @@ function makeid()
 
     return text;
 }
-
+/**
+ * Deletes a source from the saved sources
+ * @param  {[type]} index [description]
+ * @return {[type]}       [description]
+ */
 function deleteSource(index) {
   settingsSrcModel.sources.splice(index, 1);
   console.log(settingsSrcModel.sources);
@@ -111,27 +147,49 @@ function deleteSource(index) {
     loadSources();
   }, 500);
 }
+
+/**
+ * Open a file on the host
+ * @param  {String} loc File path
+ */
 function openFile(loc) {
   loc = decodeURIComponent(loc);
   console.log(loc);
   var exec = require('child_process').exec;
   exec(loc);
 }
+
+/**
+ * Open a directory in the Explorer
+ * @param  {String} loc Directory path
+ */
 function openLocation(loc) {
   loc = decodeURIComponent(loc);
   console.log(loc);
   var exec = require('child_process').exec;
   exec("start " + loc);
 }
+
+/**
+ * Open a link on the default browser
+ * @param  {String} loc Url
+ */
 function openLink(loc) {
   var exec = require('child_process').exec;
   console.log(loc);
   exec("start " + loc);
 }
+
+// When the app is ready
 $(document).ready(function () {
 
 
   const search = require('../modules/search');
+
+  /**
+   * Model for the settings
+   * @type {Vue}
+   */
   settingsSrcModel = new Vue({
     el: '.sourceTable',
     data:{
@@ -149,6 +207,11 @@ $(document).ready(function () {
             }
         }
   });
+
+  /**
+   * Model for the providers
+   * @type {Vue}
+   */
   providersModel = new Vue({
     el: '.providerTable',
     data:{
@@ -161,12 +224,15 @@ $(document).ready(function () {
       ]
     }
   });
+
+  // Close the window
   $("#closeBtn").click(function() {
     console.log("click");
     var window = remote.getCurrentWindow();
        window.close();
   });
 
+  // Open the settings menu
   $("#settingsBtn").click(function() {
     loadSources();
     var win = remote.getCurrentWindow();
@@ -179,6 +245,7 @@ $(document).ready(function () {
     $('.results').hide();
   });
 
+  // Close the settings menu
   $("#settingsDoneBtn").click(function() {
     $('.settings').hide();
     $('.results').show();
@@ -189,12 +256,15 @@ $(document).ready(function () {
     }, 500);
   });
 
+  // Open the general tab
   $("#generalBtn").click(function() {
     $('.cat-general').show();
     $('.cat-sources').hide();
     $("#generalBtn").addClass("cat-active");
     $("#sourcesBtn").removeClass("cat-active");
   });
+
+  // Open the source tab
   $("#sourcesBtn").click(function() {
     $('.cat-general').hide();
     $('.cat-sources').show();
@@ -202,6 +272,11 @@ $(document).ready(function () {
     $("#sourcesBtn").addClass("cat-active");
   });
 
+  /**
+   * Returns the correct click event for the given source
+   * @param {Document}   item     Indexed file
+   * @param {Function} callback
+   */
   function setClickFunction(item, callback) {
     var clickRes = "";
     var fa = item.path.split("\\");
@@ -220,6 +295,9 @@ $(document).ready(function () {
     return clickRes;
   }
 
+  /**
+   * Display the results to the user
+   */
   function showResults() {
     var win = remote.getCurrentWindow();
     var bounds = win.getBounds();
@@ -229,11 +307,15 @@ $(document).ready(function () {
   }
 
 
-
+  /**
+   * Add a local source
+   */
   function addLocalSource() {
     const {dialog} = require('electron').remote
     return dialog.showOpenDialog({properties: ['openDirectory']});
   }
+
+  // When pressing "ENTER" search for files
   $(document).keypress(function(e) {
     if(e.which == 13) {
       $(".loading-pulse").show();

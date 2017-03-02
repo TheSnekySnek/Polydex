@@ -8,15 +8,14 @@ const BrowserWindow = electron.BrowserWindow
 const path = require('path')
 const url = require('url')
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+// Main window object
 let mainWindow
-
+/**
+ * Starts the application UI
+ */
 function startApp() {
-
-
   var cp = require('child_process');
-
+  // Init the main window
   mainWindow = new BrowserWindow({width: 800, height: 107, frame: false, transparent: true})
   mainWindow.loadURL(url.format({
     pathname: path.join(__dirname, '/import/search/searcher.html'),
@@ -24,6 +23,7 @@ function startApp() {
     slashes: true
   }))
 
+  // When the app has finished loading show the window
   mainWindow.webContents.on('did-finish-load', function() {
     mainWindow.show();
     var child = cp.fork('./import/modules/index');
@@ -31,8 +31,12 @@ function startApp() {
       // Receive results from child process
       console.log(m);
     });
+
+    // Wait a bit before indexing files
     setTimeout(function () {
       var storage = require('electron-json-storage');
+
+      //Get the sources configured by the user and send them to the indexer
       storage.get('sources', function(error, data) {
         if (error){
           console.log(error);
@@ -80,6 +84,3 @@ app.on('activate', function () {
     createWindow()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

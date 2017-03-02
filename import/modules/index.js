@@ -1,20 +1,38 @@
 var fs = require("fs");
 var Mode = require('stat-mode');
 var Datastore = require('nedb');
+
+/**
+ * Has the database been initialized
+ * @type {Boolean}
+ */
 var ini = false;
+
+/**
+ * Database object
+ * @type {Datastore}
+ */
 var db = new Datastore({ filename: 'indexes.pdx'});
+
+// Initialize the databse
 db.loadDatabase(function (err) {
   ini = true;
+
+  // Compact the database every 10 seconds
   db.persistence.setAutocompactionInterval(10000);
 });
 
-
+//Start indexing the given directory
+//This is called by the main thread
 process.on('message', function(m) {
   watchDir(m);
 });
 
-
-function random32bit() {
+/**
+ * Creates a random string of 32 characters
+ * @return {String}
+ */
+function random32() {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -24,12 +42,19 @@ function random32bit() {
   return text;
 }
 
-
+/**
+ * Index a given directory
+ * @param  {String} dpath Path of the directory
+ */
 function watchDir(dpath) {
+  /**
+   * Index the specified file
+   * @param  {String} fpath File path
+   */
   function indexFile(fpath) {
     var fname = fpath.split("\\");
     var fileModel = {
-      "_id": random32bit(),
+      "_id": random32(),
       "word": fname[fname.length-1],
       "matches":
       [{"line": -1,
@@ -38,11 +63,15 @@ function watchDir(dpath) {
       }]
     };
     process.send(fpath);
-    insertDocument(fileModel, function(){
 
-    });
+    // Insert the document in the database
+    insertDocument(fileModel, function(){});
   }
-
+/**
+ * Inserts a document in the databse
+ * @param  {Document}   doc      Document to insert
+ * @param  {Function} callback
+ */
   var insertDocument = function(doc, callback) {
     db.update({ "word": doc.word, $not:{ $and: [{"matches.document.line": doc.matches[0].line, "matches.document.path": doc.matches[0].path}]}}, { $push: {"matches": doc.matches[0]} }, {upsert: true}, function () {
       console.log("updated");
@@ -50,11 +79,17 @@ function watchDir(dpath) {
     });
   }
 
-  // List all files in a directory recursively
+  /**
+   * List all files in a directory recursively
+   * @param  {String} dir Path of the directory
+   */
   var walkSync = function(dir) {
          var path = path || require('path');
          var fs = fs || require('fs')
          var files = [];
+
+         // We can get permissions errors when opening folders
+         // Using try/catch we can remove those folders from the indexation without crashing
          try {
            files = fs.readdirSync(dir);
          } catch (e) {
@@ -63,6 +98,8 @@ function watchDir(dpath) {
 
          files.forEach(function(file) {
             try {
+
+              // if the file is a folder loop with the new directory
               if (fs.statSync(path.join(dir, file)).isDirectory()) {
                   walkSync(path.join(dir, file));
               }
@@ -74,10 +111,17 @@ function watchDir(dpath) {
             }
          });
      };
+
+     //Start the indexation
      walkSync(dpath);
 }
 
-
+  /**
+   * Removes Diacritics from a String
+   * Useful when searching for words
+   * @param  {String} str Input
+   * @return {String}     Output
+   */
   function removeDiacritics (str) {
 
   var defaultDiacriticsRemovalMap = [
