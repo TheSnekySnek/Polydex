@@ -46,7 +46,7 @@ function startApp() {
           }
         }
       });
-    }, 5000)
+    }, 100)
   });
 
   mainWindow.on('closed', function () {

@@ -18,13 +18,17 @@ exports.search = function(query, access_token, callback) {
 }
 
 exports.getLink = function(path, access_token, callback) {
-  rq.post({url: "https://api.dropboxapi.com/2/files/get_temporary_link",
+  rq.post({url: "https://api.dropboxapi.com/2/sharing/get_file_metadata",
   headers: {
     "Authorization": "Bearer "+ access_token,
     "Content-Type": "application/json"
   },
-  json:{"path": path}},
+  json:{
+    "file": path,
+    "actions": []
+  }
+},
   function (err,httpResponse,body) {
-    callback(body);
+    callback(body.preview_url);
   });
 }

@@ -123,6 +123,11 @@ function openLocation(loc) {
   var exec = require('child_process').exec;
   exec("start " + loc);
 }
+function openLink(loc) {
+  var exec = require('child_process').exec;
+  console.log(loc);
+  exec("start " + loc);
+}
 $(document).ready(function () {
 
 
@@ -168,13 +173,15 @@ $(document).ready(function () {
     lBounds = win.getBounds();
     console.log(lBounds);
     var bounds = lBounds;
-    bounds.height = 440;
+    bounds.height = 500;
     win.setBounds(bounds);
     $('.settings').show();
+    $('.results').hide();
   });
 
   $("#settingsDoneBtn").click(function() {
     $('.settings').hide();
+    $('.results').show();
     var win = remote.getCurrentWindow();
     setTimeout(function() {
       console.log(lBounds);
@@ -195,6 +202,24 @@ $(document).ready(function () {
     $("#sourcesBtn").addClass("cat-active");
   });
 
+  function setClickFunction(item, callback) {
+    var clickRes = "";
+    var fa = item.path.split("\\");
+    var fname = fa[fa.length-1];
+    switch (item.source) {
+      case "File":
+      clickRes = '<button onClick="openLocation(\''+escape(item.path.replace(fname, ""))+'\');" class="pathBtn" type="button" name="button"><i class="fa fa-folder-open" aria-hidden="true"></i></button> <button class="openBtn" type="button" name="button" onClick="openFile(\''+escape(item.path)+'\');"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+        break;
+      case "Dropbox":
+      console.log(item);
+        clickRes = '<button onClick="openLink(\''+item.link+'\');" class="pathBtn" type="button" name="button"><i class="fa fa-globe" aria-hidden="true"></i></button>';
+        break;
+      default:
+
+    }
+    return clickRes;
+  }
+
   function showResults() {
     var win = remote.getCurrentWindow();
     var bounds = win.getBounds();
@@ -203,12 +228,15 @@ $(document).ready(function () {
     $('.results').show();
   }
 
+
+
   function addLocalSource() {
     const {dialog} = require('electron').remote
     return dialog.showOpenDialog({properties: ['openDirectory']});
   }
   $(document).keypress(function(e) {
     if(e.which == 13) {
+      $(".loading-pulse").show();
       console.log("searching");
       search.search($('#searcher').val(), function(docs) {
         console.log(docs);
@@ -224,10 +252,12 @@ $(document).ready(function () {
               }
 
               console.log("hap");
-              var htTemplate = '<div class="document-item"><i class="fa fa-file fa-4x"></i><p class="fname">'+fname+'</p><p class="fpath">'+docs[i][y].path+'</p><button onClick="openLocation(\''+escape(docs[i][y].path.replace(fname, ""))+'\');" class="pathBtn" type="button" name="button"><i class="fa fa-folder-open" aria-hidden="true"></i></button> <button class="openBtn" type="button" name="button" onClick="openFile(\''+escape(docs[i][y].path)+'\');"><i class="fa fa-pencil" aria-hidden="true"></i></button> </div>'
+              var clickF = setClickFunction(docs[i][y]);
+              var htTemplate = '<div class="document-item"><i class="fa fa-'+docs[i][y].source.toLowerCase()+' fa-4x"></i><p class="fname">'+fname+'</p><p class="fpath">'+docs[i][y].path+'</p>'+clickF+'</div>'
               $(".results").append(htTemplate);
             }
           }
+          $(".loading-pulse").hide();
         if(docs.length > 0){
           showResults();
         }

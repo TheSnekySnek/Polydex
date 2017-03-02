@@ -34,7 +34,7 @@ function watchDir(dpath) {
       "matches":
       [{"line": -1,
         "path": fpath,
-        "source": "Local"
+        "source": "File"
       }]
     };
     process.send(fpath);

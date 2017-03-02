@@ -57,13 +57,18 @@ exports.search = function(q, callback) {
         console.log("s1");
         dropbox.search(q, sources[i].data.access_token, function(results) {
           for (var i = 0; i < results.length; i++) {
-            var doc =
-          [{"line": -1,
-            "path": results[i].metadata.path_lower,
-            "source": "Dropbox"
-          }];
-          res.push(doc);
-          callback(res);
+            var curItem = results[i];
+            dropbox.getLink(curItem.metadata.id, sources[i].data.access_token, function (resLink) {
+              var doc =
+            [{"line": -1,
+              "path": curItem.metadata.name,
+              "link": resLink,
+              "source": "Dropbox"
+            }];
+            res.push(doc);
+            console.log(doc);
+            callback(res);
+            });
           }
         });
       }
@@ -73,6 +78,19 @@ exports.search = function(q, callback) {
 
 exports.insertKeyword = function(q){
 
+}
+
+exports.getDropboxLink = function(path, callback){
+  var dropbox = require("./api/dropbox");
+  for (var i = 0; i < sources.length; i++) {
+    if(sources[i].name == "Dropbox"){
+      dropbox.getLink(path, sources[i].data.access_token, function(results) {
+        callback(results);
+        return;
+      });
+    }
+  }
+  callback();
 }
 
 exports.insertDocument = function(doc, callback) {
