@@ -62,7 +62,7 @@ function watchDir(dpath) {
         "source": "File"
       }]
     };
-    process.send(fpath);
+    //process.send(fpath);
 
     // Insert the document in the database
     insertDocument(fileModel, function(){});
@@ -74,7 +74,7 @@ function watchDir(dpath) {
  */
   var insertDocument = function(doc, callback) {
     db.update({ "word": doc.word, $not:{ $and: [{"matches.document.line": doc.matches[0].line, "matches.document.path": doc.matches[0].path}]}}, { $push: {"matches": doc.matches[0]} }, {upsert: true}, function () {
-      console.log("updated");
+      //console.log("updated " + doc.word);
       callback();
     });
   }

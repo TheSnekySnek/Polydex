@@ -10,6 +10,8 @@ const url = require('url')
 
 // Main window object
 let mainWindow
+
+let indexThread
 /**
  * Starts the application UI
  */
@@ -26,8 +28,8 @@ function startApp() {
   // When the app has finished loading show the window
   mainWindow.webContents.on('did-finish-load', function() {
     mainWindow.show();
-    var child = cp.fork('./import/modules/index');
-    child.on('message', function(m) {
+    indexThread = cp.fork('./import/modules/index');
+    indexThread.on('message', function(m) {
       // Receive results from child process
       console.log(m);
     });
@@ -45,7 +47,7 @@ function startApp() {
           for (var i = 0; i < data.length; i++) {
             console.log(data[i]);
             if(data[i].name == "Local"){
-              child.send(data[i].account[0]);
+              indexThread.send(data[i].account[0]);
             }
           }
         }

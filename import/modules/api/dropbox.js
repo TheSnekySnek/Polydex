@@ -13,6 +13,7 @@ exports.search = function(query, access_token, callback) {
         "max_results": 100,
         "mode": "filename_and_content"}},
   function (err,httpResponse,body) {
+    console.log(body.matches);
     callback(body.matches);
   });
 }
@@ -24,11 +25,11 @@ exports.getLink = function(path, access_token, callback) {
     "Content-Type": "application/json"
   },
   json:{
-    "file": path,
+    "file": path.id,
     "actions": []
   }
 },
   function (err,httpResponse,body) {
-    callback(body.preview_url);
+    callback({"link": body.preview_url, "name": path.name});
   });
 }

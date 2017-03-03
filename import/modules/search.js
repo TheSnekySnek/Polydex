@@ -40,33 +40,31 @@ exports.search = function(q, callback) {
   if(ini && q != ""){
     var res = [];
     var reg = new RegExp(q);
-    console.log(reg);
     db.loadDatabase(function (err) {
-      console.log("re");
       db.find({ "word": reg }, function (err, docs) {
         for (var i = 0; i < docs.length; i++) {
           res.push(docs[i].matches.unique());
         }
-        console.log("cb");
         callback(res);
       });
     });
     var dropbox = require("./api/dropbox");
     for (var i = 0; i < sources.length; i++) {
       if(sources[i].name == "Dropbox"){
-        console.log("s1");
-        dropbox.search(q, sources[i].data.access_token, function(results) {
-          for (var i = 0; i < results.length; i++) {
-            var curItem = results[i];
-            dropbox.getLink(curItem.metadata.id, sources[i].data.access_token, function (resLink) {
+        var curSource = sources[i];
+        dropbox.search(q, curSource.data.access_token, function(results) {
+          for (var x = 0; x < results.length; x++) {
+            var curItem = results[x];
+            dropbox.getLink(curItem.metadata, curSource.data.access_token, function (resLink) {
+              console.log(curItem);
               var doc =
             [{"line": -1,
-              "path": curItem.metadata.name,
-              "link": resLink,
+              "path": resLink.name,
+              "link": resLink.link,
               "source": "Dropbox"
             }];
             res.push(doc);
-            console.log(doc);
+            //console.log(doc);
             callback(res);
             });
           }

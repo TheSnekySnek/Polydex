@@ -24,6 +24,7 @@ function connectToService() {
         if(!err){
           settingsSrcModel.sources.push({name: "Local", icon: "fa-folder", account: dir});
           saveSources();
+          remote.indexThread.send({name: "Local", icon: "fa-folder", account: dir})
         }
         else{
           console.log(err);
@@ -286,7 +287,6 @@ $(document).ready(function () {
       clickRes = '<button onClick="openLocation(\''+escape(item.path.replace(fname, ""))+'\');" class="pathBtn" type="button" name="button"><i class="fa fa-folder-open" aria-hidden="true"></i></button> <button class="openBtn" type="button" name="button" onClick="openFile(\''+escape(item.path)+'\');"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
         break;
       case "Dropbox":
-      console.log(item);
         clickRes = '<button onClick="openLink(\''+item.link+'\');" class="pathBtn" type="button" name="button"><i class="fa fa-globe" aria-hidden="true"></i></button>';
         break;
       default:

@@ -1,7 +1,7 @@
 {
-  "name": "polydex",
+  "name": "Polydex",
   "version": "1.0.0",
-  "description": "Indexer",
+  "description": "File Indexer",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
