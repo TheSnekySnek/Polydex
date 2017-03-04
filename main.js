@@ -28,7 +28,7 @@ function startApp() {
   // When the app has finished loading show the window
   mainWindow.webContents.on('did-finish-load', function() {
     mainWindow.show();
-    indexThread = cp.fork('./import/modules/index');
+    indexThread = cp.fork(path.join(__dirname,'/import/modules/index'));
     indexThread.on('message', function(m) {
       // Receive results from child process
       console.log(m);
@@ -52,7 +52,7 @@ function startApp() {
           }
         }
       });
-    }, 100)
+    }, 3000)
   });
 
   mainWindow.on('closed', function () {

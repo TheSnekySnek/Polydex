@@ -1,6 +1,7 @@
 var Datastore = require('nedb');
 var ini = false;
 var db = new Datastore({ filename: 'indexes.pdx'});
+const remote = require('electron').remote;
 console.log("init DB");
 db.loadDatabase(function (err) {
   ini = true;
@@ -15,7 +16,7 @@ exports.reload = function() {
     if (error){
       console.log(error);
     }
-    else if(data.length > 0){
+    else{
       sources = data;
       console.log(data);
     }
@@ -48,7 +49,8 @@ exports.search = function(q, callback) {
         callback(res);
       });
     });
-    var dropbox = require("./api/dropbox");
+    var path = require("path");
+    var dropbox = require(path.join(__dirname,"./api/dropbox.js"));
     for (var i = 0; i < sources.length; i++) {
       if(sources[i].name == "Dropbox"){
         var curSource = sources[i];

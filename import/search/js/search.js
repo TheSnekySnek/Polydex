@@ -7,6 +7,7 @@ var providersModel;
  */
 const remote = require('electron').remote;
 const electron = require('electron');
+const search = require('../modules/search');
 
 /**
  * Authentificate to a service
@@ -102,6 +103,9 @@ function saveSources() {
     if (error){
       console.log(error);
     }
+    else{
+      search.reload();
+    }
   });
 }
 
@@ -184,9 +188,6 @@ function openLink(loc) {
 // When the app is ready
 $(document).ready(function () {
 
-
-  const search = require('../modules/search');
-
   /**
    * Model for the settings
    * @type {Vue}
@@ -232,6 +233,14 @@ $(document).ready(function () {
     var window = remote.getCurrentWindow();
        window.close();
   });
+
+	document.addEventListener("keydown", function (e) {
+		if (e.which === 123) {
+			remote.getCurrentWindow().toggleDevTools();
+		} else if (e.which === 116) {
+			location.reload();
+		}
+	});
 
   // Open the settings menu
   $("#settingsBtn").click(function() {
@@ -280,6 +289,7 @@ $(document).ready(function () {
    */
   function setClickFunction(item, callback) {
     var clickRes = "";
+    console.log(item);
     var fa = item.path.split("\\");
     var fname = fa[fa.length-1];
     switch (item.source) {

@@ -1,6 +1,9 @@
 var fs = require("fs");
+process.send("FS");
 var Mode = require('stat-mode');
+process.send("stat");
 var Datastore = require('nedb');
+process.send("NEDB");
 
 /**
  * Has the database been initialized
