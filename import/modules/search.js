@@ -50,6 +50,7 @@ exports.search = function(q, callback) {
       });
     });
     var path = require("path");
+    var google = require(path.join(__dirname,"./api/google.js"));
     var dropbox = require(path.join(__dirname,"./api/dropbox.js"));
     for (var i = 0; i < sources.length; i++) {
       if(sources[i].name == "Dropbox"){
@@ -69,6 +70,23 @@ exports.search = function(q, callback) {
             //console.log(doc);
             callback(res);
             });
+          }
+        });
+      }
+      else if(sources[i].name == "Google"){
+        var curSource = sources[i];
+        google.search(q, curSource.data.access_token, function(results){
+          for (var x = 0; x < results.length; x++) {
+            var curItem = results[x];
+
+              var doc =
+            [{"line": -1,
+              "path": curItem.name,
+              "source": "Google"
+            }];
+            res.push(doc);
+            //console.log(doc);
+            callback(res);
           }
         });
       }

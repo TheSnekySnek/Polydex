@@ -33,13 +33,27 @@ function connectToService() {
       });
       break;
     case "Google":
+
+    var token = makeid();
+    var BrowserWindow = remote.BrowserWindow;
+    conWindow = new BrowserWindow({width: 800, height: 600, frame: false, transparent: false})
+    conWindow.loadURL('https://accounts.google.com/o/oauth2/v2/auth?'+
+    'scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.metadata.readonly&'+
+    'access_type=offline&'+
+    'include_granted_scopes=true&'+
+    'state='+token+'&'+
+    'redirect_uri=https://polydex.io/oauth/google&'+
+    'response_type=code&'+
+    'client_id=583639894202-irebu614ajb89920g1qqd76vf50nm4p9.apps.googleusercontent.com');
+    checkServiceAdded(token, conWindow, "google");
+
       break;
     case "Dropbox":
     var token = makeid();
-    const BrowserWindow = remote.BrowserWindow;
+    var BrowserWindow = remote.BrowserWindow;
     conWindow = new BrowserWindow({width: 800, height: 600, frame: false, transparent: false})
     conWindow.loadURL("https://www.dropbox.com/oauth2/authorize?response_type=code&client_id=5reu87si7378b0x&redirect_uri=https://polydex.io/oauth/dropbox&state=" + token);
-    checkDropboxAdded(token, conWindow);
+    checkServiceAdded(token, conWindow, "dropbox");
       break;
     case "OneDrive":
       break;
@@ -75,20 +89,30 @@ var checkPermission = function (file, mask, cb){
  * @param  {String} token   Token used for authentification
  * @param  {Window} bwindow [Authorization window]
  */
-function checkDropboxAdded(token, bwindow) {
+function checkServiceAdded(token, bwindow, type) {
   var rq = require('request');
   rq.post({url: "https://polydex.io/listener", form:{"token": token}},
   function (err,httpResponse,body) {
     if(body != "err"){
       var resp = JSON.parse(body);
       console.log(resp);
-      settingsSrcModel.sources.push({name: "Dropbox", icon: "fa-dropbox", account: "", "data": resp});
+      switch (type) {
+        case "dropbox":
+          settingsSrcModel.sources.push({name: "Dropbox", icon: "fa-dropbox", account: "", "data": resp});
+          break;
+        case "google":
+          settingsSrcModel.sources.push({name: "Google", icon: "fa-google", account: "", "data": resp});
+          break;
+        default:
+
+      }
+
       saveSources();
       bwindow.close();
     }
     else{
       setTimeout(function() {
-        checkDropboxAdded(token, bwindow);
+        checkServiceAdded(token, bwindow, type);
       }, 1000);
     }
   });
