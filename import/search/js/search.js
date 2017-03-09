@@ -20,7 +20,6 @@ function connectToService() {
     case "Local":
       const {dialog} = require('electron').remote;
       var dir = dialog.showOpenDialog({properties: ['openDirectory']});
-      console.log(dir);
       checkPermission (dir[0], 4, function(err, res) {
         if(!err){
           settingsSrcModel.sources.push({name: "Local", icon: "fa-folder", account: dir});
@@ -38,7 +37,7 @@ function connectToService() {
     var BrowserWindow = remote.BrowserWindow;
     conWindow = new BrowserWindow({width: 800, height: 600, frame: false, transparent: false})
     conWindow.loadURL('https://accounts.google.com/o/oauth2/v2/auth?'+
-    'scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.metadata.readonly&'+
+    'scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.metadata.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.photos.readonly&'+
     'access_type=offline&'+
     'include_granted_scopes=true&'+
     'state='+token+'&'+
@@ -95,7 +94,6 @@ function checkServiceAdded(token, bwindow, type) {
   function (err,httpResponse,body) {
     if(body != "err"){
       var resp = JSON.parse(body);
-      console.log(resp);
       switch (type) {
         case "dropbox":
           settingsSrcModel.sources.push({name: "Dropbox", icon: "fa-dropbox", account: "", "data": resp});
@@ -144,7 +142,6 @@ function loadSources() {
     }
     else if(data.length > 0){
       settingsSrcModel.sources = data;
-      console.log(data);
     }
   });
 }
@@ -170,7 +167,6 @@ function makeid()
  */
 function deleteSource(index) {
   settingsSrcModel.sources.splice(index, 1);
-  console.log(settingsSrcModel.sources);
   saveSources();
   setTimeout(function() {
     loadSources();
@@ -183,7 +179,6 @@ function deleteSource(index) {
  */
 function openFile(loc) {
   loc = decodeURIComponent(loc);
-  console.log(loc);
   var exec = require('child_process').exec;
   exec(loc);
 }
@@ -194,7 +189,6 @@ function openFile(loc) {
  */
 function openLocation(loc) {
   loc = decodeURIComponent(loc);
-  console.log(loc);
   var exec = require('child_process').exec;
   exec("start " + loc);
 }
@@ -205,7 +199,6 @@ function openLocation(loc) {
  */
 function openLink(loc) {
   var exec = require('child_process').exec;
-  console.log(loc);
   exec("start " + loc);
 }
 
@@ -225,7 +218,6 @@ $(document).ready(function () {
 
             delete : function (deleteIndex) {
               settingsSrcModel.sources.splice(deleteIndex, 1);
-              console.log(settingsSrcModel.sources);
               saveSources();
               setTimeout(function() {
                 loadSources();
@@ -253,7 +245,6 @@ $(document).ready(function () {
 
   // Close the window
   $("#closeBtn").click(function() {
-    console.log("click");
     var window = remote.getCurrentWindow();
        window.close();
   });
@@ -271,7 +262,6 @@ $(document).ready(function () {
     loadSources();
     var win = remote.getCurrentWindow();
     lBounds = win.getBounds();
-    console.log(lBounds);
     var bounds = lBounds;
     bounds.height = 500;
     win.setBounds(bounds);
@@ -285,7 +275,6 @@ $(document).ready(function () {
     $('.results').show();
     var win = remote.getCurrentWindow();
     setTimeout(function() {
-      console.log(lBounds);
       win.setBounds(lBounds);
     }, 500);
   });
@@ -313,7 +302,6 @@ $(document).ready(function () {
    */
   function setClickFunction(item, callback) {
     var clickRes = "";
-    console.log(item);
     var fa = item.path.split("\\");
     var fname = fa[fa.length-1];
     switch (item.source) {
@@ -353,9 +341,7 @@ $(document).ready(function () {
   $(document).keypress(function(e) {
     if(e.which == 13) {
       $(".loading-pulse").show();
-      console.log("searching");
       search.search($('#searcher').val(), function(docs) {
-        console.log(docs);
         $(".results").html("");
         $(".results").scrollTop(0);
           for (var i = 0; i < docs.length; i++) {
@@ -366,8 +352,6 @@ $(document).ready(function () {
               if(docs[i][y].line > -1){
                 fname += (" Line: " +  (docs[i][y].line+1))
               }
-
-              console.log("hap");
               var clickF = setClickFunction(docs[i][y]);
               var htTemplate = '<div class="document-item"><i class="fa fa-'+docs[i][y].source.toLowerCase()+' fa-4x"></i><p class="fname">'+fname+'</p><p class="fpath">'+docs[i][y].path+'</p>'+clickF+'</div>'
               $(".results").append(htTemplate);

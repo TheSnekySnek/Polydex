@@ -54,11 +54,11 @@ exports.search = function(q, callback) {
     var dropbox = require(path.join(__dirname,"./api/dropbox.js"));
     for (var i = 0; i < sources.length; i++) {
       if(sources[i].name == "Dropbox"){
-        var curSource = sources[i];
-        dropbox.search(q, curSource.data.access_token, function(results) {
+        var curSourceD = sources[i];
+        dropbox.search(q, curSourceD.data.access_token, function(results) {
           for (var x = 0; x < results.length; x++) {
             var curItem = results[x];
-            dropbox.getLink(curItem.metadata, curSource.data.access_token, function (resLink) {
+            dropbox.getLink(curItem.metadata, curSourceD.data.access_token, function (resLink) {
               console.log(curItem);
               var doc =
             [{"line": -1,
@@ -74,8 +74,8 @@ exports.search = function(q, callback) {
         });
       }
       else if(sources[i].name == "Google"){
-        var curSource = sources[i];
-        google.search(q, curSource.data.access_token, function(results){
+        var curSourceG = sources[i];
+        google.search(q, curSourceG.data.access_token, function(results){
           for (var x = 0; x < results.length; x++) {
             var curItem = results[x];
 
