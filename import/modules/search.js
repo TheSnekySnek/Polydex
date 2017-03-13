@@ -78,15 +78,17 @@ exports.search = function(q, callback) {
         google.search(q, curSourceG.data.access_token, function(results){
           for (var x = 0; x < results.length; x++) {
             var curItem = results[x];
-
+            google.getFileLink(curItem, curSourceG.data.access_token, function(it){
               var doc =
             [{"line": -1,
-              "path": curItem.name,
-              "source": "Google"
+              "path": it.name,
+              "source": "Google",
+              "link" : it.path
             }];
             res.push(doc);
             //console.log(doc);
             callback(res);
+            });
           }
         });
       }

@@ -13,15 +13,15 @@ exports.search = function(query, access_token, callback) {
   })
 };
 
-exports.getFileParents = function(file, access_token, callback) {
+exports.getFileLink = function(file, access_token, callback) {
   console.log("search");
-  rq.get({url: "https://www.googleapis.com/drive/v3/files/"+file.id+"?access_token=" + access_token,
+  rq.get({url: "https://www.googleapis.com/drive/v3/files/"+file.id+"?access_token=" + access_token + "&fields=webContentLink",
   headers: {
     "Content-Type": "application/json"
   }},
   function (err,httpResponse,body) {
     console.log("Google File");
     console.log(JSON.parse(body));
-    callback({"name": file.name, "path": "test"});
+    callback({"name": file.name, "path": JSON.parse(body).webContentLink});
   })
 };
