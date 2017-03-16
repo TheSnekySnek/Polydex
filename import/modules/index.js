@@ -92,7 +92,7 @@ function watchDir(dpath) {
          var files = [];
 
          // We can get permissions errors when opening folders
-         // Using try/catch we can remove those folders from the indexation without crashing
+         // By using try/catch we can remove those folders from the indexation without crashing
          try {
            files = fs.readdirSync(dir);
          } catch (e) {

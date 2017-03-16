@@ -86,7 +86,6 @@ exports.search = function(q, callback) {
               "link" : it.path
             }];
             res.push(doc);
-            //console.log(doc);
             callback(res);
             });
           }
