@@ -20,9 +20,10 @@ var db = new Datastore({ filename: 'indexes.pdx'});
 // Initialize the databse
 db.loadDatabase(function (err) {
   ini = true;
+  console.log("Database Loaded");
 
   // Compact the database every 10 seconds
-  db.persistence.setAutocompactionInterval(10000);
+  db.persistence.setAutocompactionInterval(5000);
 });
 
 //Start indexing the given directory
