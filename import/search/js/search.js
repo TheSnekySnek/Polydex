@@ -56,15 +56,13 @@ function connectToService() {
       break;
     case "OneDrive":
     var token = makeid();
-    var BrowserWindow = remote.BrowserWindow;
-    conWindow = new BrowserWindow({width: 1024, height: 720, frame: false, transparent: false})
-    conWindow.loadURL('https://login.microsoftonline.com/common/oauth2/v2.0/authorize?'+
+    openLink('https://login.microsoftonline.com/common/oauth2/v2.0/authorize?'+
     'client_id=cbc3bf51-f74c-46cd-8a2b-8f3bb1be5f21'+
     '&scope=files.read.all'+
     '&response_type=code'+
-    'state='+token+'&'+
+    '&state='+token+'&'+
     '&redirect_uri=https://polydex.io/oauth/onedrive');
-    checkServiceAdded(token, conWindow, "onedrive");
+    checkServiceAdded(token, null, "onedrive");
       break;
     case "Github":
       break;
@@ -112,6 +110,7 @@ function checkServiceAdded(token, bwindow, type) {
           settingsSrcModel.sources.push({name: "Google", icon: "fa-google", account: "", "data": resp});
           break;
         case "onedrive":
+        console.log("Microsoft");
           settingsSrcModel.sources.push({name: "OneDrive", icon: "fa-windows", account: "", "data": resp});
           break;
         default:
@@ -119,7 +118,10 @@ function checkServiceAdded(token, bwindow, type) {
       }
 
       saveSources();
-      bwindow.close();
+      if(bwindow){
+        bwindow.close();
+      }
+
     }
     else{
       setTimeout(function() {
@@ -212,7 +214,8 @@ function openLocation(loc) {
  */
 function openLink(loc) {
   var exec = require('child_process').exec;
-  exec("start " + loc);
+  console.log("start \"\" \"" + loc + "\"");
+  exec("start \"\" \"" + loc + "\"");
 }
 
 // When the app is ready
