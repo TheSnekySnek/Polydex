@@ -2,13 +2,13 @@ var rq = require("request");
 
 exports.search = function(query, access_token, callback) {
   console.log("search");
-  rq.get({url: "https://www.googleapis.com/drive/v3/files?q=name+contains+%27"+query+"%27&access_token=" + access_token,
+  rq.get({url: "https://graph.microsoft.com/beta/me/drive/root/search?q="+query,
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "text/plain",
+    "Authorization": "Bearer " + access_token
   }},
   function (err,httpResponse,body) {
-    console.log("Google");
+    console.log("Microsoft");
     console.log(JSON.parse(body));
-    callback(JSON.parse(body).files);
   })
 };

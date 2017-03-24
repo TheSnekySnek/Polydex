@@ -52,6 +52,7 @@ exports.search = function(q, callback) {
     var path = require("path");
     var google = require(path.join(__dirname,"./api/google.js"));
     var dropbox = require(path.join(__dirname,"./api/dropbox.js"));
+    var onedrive = require(path.join(__dirname,"./api/onedrive.js"));
     for (var i = 0; i < sources.length; i++) {
       if(sources[i].name == "Dropbox"){
         var curSourceD = sources[i];
@@ -89,6 +90,12 @@ exports.search = function(q, callback) {
             callback(res);
             });
           }
+        });
+      }
+      else if(sources[i].name == "OneDrive"){
+        var curSourceG = sources[i];
+        onedrive.search(q, curSourceG.data.access_token, function(results){
+
         });
       }
     }
