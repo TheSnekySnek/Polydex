@@ -1,6 +1,6 @@
 # Polydex
 
-Polydex is search engine that lets you look for files on your computer and on various external sites like Dropbox, Google Drive, 
+Polydex is a search engine that lets you look for files on your computer and on various external sites like Dropbox, Google Drive, 
 One Cloud or even GitHub
 
 ## Installation
