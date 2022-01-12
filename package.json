@@ -22,8 +22,8 @@
   "dependencies": {
     "electron-json-storage": "^3.0.1",
     "electron-require": "^0.3.0",
-    "google-auth-library": "^0.10.0",
-    "googleapis": "^17.1.0",
+    "google-auth-library": "^6.0.0",
+    "googleapis": "^49.0.0",
     "nedb": "^1.8.0",
     "request": "^2.80.0",
     "stat-mode": "^0.2.2"
